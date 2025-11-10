@@ -37,4 +37,43 @@ namespace LotteryAPI.Model
 
 	}
 
+	public class TicketInfoReq
+	{
+		public int campaignId;
+
+		public string prizeType;
+
+		public string lotDate;
+
+	
+	}
+
+
+	public class TicketInfo
+	{
+		public long ticketsum;
+
+		public long ticketmin;
+
+		public long ticketmax;
+
+		public TicketInfo(long sum, long min, long max)
+		{
+			this.ticketsum = sum;
+			this.ticketmin = min;
+			this.ticketmax = max;
+		}
+	}
+
+	public class PrizeInfo
+    {
+		public int so_luong_giai;
+		public string lot_date;
+		public PrizeInfo(int soluong, string p_lotdate)
+        {
+			so_luong_giai = soluong;
+			lot_date = p_lotdate;
+        }
+    }
+
 }

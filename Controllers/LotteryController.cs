@@ -63,15 +63,39 @@ namespace LotteryAPI.Controllers
         public string GetCurrentDetailCalendar([FromBody] int cal_id)
         {
             List<WinCalenderDetail> res = new List<WinCalenderDetail>();
-            WinCalenderDetail item = new WinCalenderDetail(cal_id, "Giai Dac biet", 0, 10, 0,"","",1 );
+            WinCalenderDetail item = new WinCalenderDetail(cal_id + 1, "Giai Dac biet", 0, 10, 0, "", "", 1);
             res.Add(item);
-            item = new WinCalenderDetail(cal_id, "Giai Nhat", 1, 10, 0,"","",1 );
+            item = new WinCalenderDetail(cal_id + 2, "Giai Nhat", 1, 10, 0, "", "", 1);
             res.Add(item);
-            item = new WinCalenderDetail(cal_id, "Giai Nhi", 2, 10, 0,"","",1 );
+            item = new WinCalenderDetail(cal_id + 3, "Giai Nhi", 2, 10, 0, "", "", 1);
             res.Add(item);
             //return "xx"; 
             return JsonConvert.SerializeObject(res);
         }
+        
+        [HttpPost("[action]")]
+        public string getPrizeInfo([FromBody] int cal_detail_id)
+        {
+           
+            PrizeInfo item = new PrizeInfo(cal_detail_id, "2025-11-15" );
+            
+            //return "xx"; 
+            return JsonConvert.SerializeObject(item);
+        }
+
+
+        [HttpPost("[action]")]
+        public string getTicketInfo(TicketInfoReq req)
+        {
+
+            TicketInfo item = new TicketInfo(100, 200, req.campaignId);
+
+            //return "xx"; 
+            return JsonConvert.SerializeObject(item);
+        }
+        
+        
+        
         
 
 
