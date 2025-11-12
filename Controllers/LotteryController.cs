@@ -69,7 +69,7 @@ namespace LotteryAPI.Controllers
         public string GetCurrentCalendar([FromBody] int campaign_id)
         {
             List<WinCalender> res = new List<WinCalender>();
-            WinCalender item = new WinCalender(1, campaign_id, "ngay 1--" + campaign_id, "", 0, 0);
+            WinCalender item = new WinCalender(1, campaign_id, "ngay 123sss--" + campaign_id, "", 0, 0);
             res.Add(item);
             item = new WinCalender(2, campaign_id, "ngay 2--" + campaign_id, "", 0, 0);
             res.Add(item);
