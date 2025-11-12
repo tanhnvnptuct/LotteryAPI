@@ -94,6 +94,21 @@ namespace LotteryAPI.Controllers
             return JsonConvert.SerializeObject(item);
         }
         
+
+        [HttpPost("[action]")]
+        public string doSpin(LotteryReq req)
+        {
+            List<LotteryRes> res = new List<LotteryRes>();
+            for (int i = 0;i<req.campaign_id;i++)
+            {
+                res.Add(new LotteryRes("mdt:"+req.prize_type+i, "msisdn:"+req.prize_type+i));
+
+            }
+            
+            
+          
+            return JsonConvert.SerializeObject(res);
+        }
         
         
         
