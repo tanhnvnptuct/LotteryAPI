@@ -68,13 +68,33 @@ namespace LotteryAPI.Controllers
         [HttpPost("[action]")]
         public string GetCurrentCalendar([FromBody] int campaign_id)
         {
-            List<WinCalender> res = new List<WinCalender>();
-            WinCalender item = new WinCalender(1, campaign_id, "ngay 123sss--" + campaign_id, "", 0, 0);
-            res.Add(item);
-            item = new WinCalender(2, campaign_id, "ngay 2--" + campaign_id, "", 0, 0);
-            res.Add(item);
-            item = new WinCalender(3, campaign_id, "ngay 3--" + campaign_id, "", 0, 0);
-            res.Add(item);
+           List<WinCalender> res = new List<WinCalender>();
+
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.lottery_find_calender";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int16, obj: campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+
+
+                while (drd.Read())
+                {
+                    WinCalender item = new WinCalender(Convert.ToInt32(drd["id"]), Convert.ToInt32(drd["campaign_id"]),
+                        drd["lot_name"].ToString() , drd["lot_date"].ToString(), Convert.ToInt32(drd["isfinal"]),  Convert.ToInt32(drd["status"]));
+                    res.Add(item);
+                }
+
+            }
+
             //return new string[] { "value1111", "value2" };
             return JsonConvert.SerializeObject(res);
         }

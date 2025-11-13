@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/tanhn/My Work/Vue/LotteryAPI/LotteryAPI.csproj": {}
+    "D:\\LotteryAPI\\LotteryAPI.csproj": {}
   },
   "projects": {
-    "/Users/tanhn/My Work/Vue/LotteryAPI/LotteryAPI.csproj": {
+    "D:\\LotteryAPI\\LotteryAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/tanhn/My Work/Vue/LotteryAPI/LotteryAPI.csproj",
+        "projectUniqueName": "D:\\LotteryAPI\\LotteryAPI.csproj",
         "projectName": "LotteryAPI",
-        "projectPath": "/Users/tanhn/My Work/Vue/LotteryAPI/LotteryAPI.csproj",
-        "packagesPath": "/Users/tanhn/.nuget/packages/",
-        "outputPath": "/Users/tanhn/My Work/Vue/LotteryAPI/obj/",
+        "projectPath": "D:\\LotteryAPI\\LotteryAPI.csproj",
+        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
+        "outputPath": "D:\\LotteryAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/tanhn/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -38,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "netcoreapp3.1": {
@@ -68,6 +68,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[3.1.32, 3.1.32]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -76,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.306/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }
