@@ -181,17 +181,68 @@ namespace LotteryAPI.Controllers
         public string doSpin(LotteryReq req)
         {
             List<LotteryRes> res = new List<LotteryRes>();
-            for (int i = 0;i<req.campaign_id;i++)
+			using (OracleConnection con = new OracleConnection(_connectionString))
             {
-                res.Add(new LotteryRes("mdt:"+req.prize_type+i, "msisdn:"+req.prize_type+i));
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_common.QUAY_THUONG_V2";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_campaign_id", type: OracleDbType.Int16, obj: req.campaign_id, direction: ParameterDirection.Input));
+				cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_prize_type", type: OracleDbType.Varchar2, obj: req.prize_type, direction: ParameterDirection.Input));
+				cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_PRIZE_LEVEL", type: OracleDbType.Int16, obj: req.prize_level, direction: ParameterDirection.Input));
+				cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_in_dateYYYYMMDD", type: OracleDbType.Varchar2, obj: req.prize_date, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+				while (drd.Read())
+                {
+                    LotteryRes item = new LotteryRes(drd["mdt"].ToString(),drd["msisdn"].ToString());
+                    res.Add(item);
+                }
+                
 
             }
-            
-            
-          
+			
             return JsonConvert.SerializeObject(res);
         }
         
+         [HttpPost("[action]")]
+        public string saveResult(SaveResultReq req)
+        {
+			string res="";
+            //List<LotteryRes> res = new List<LotteryRes>();
+			using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_common.SAVE_RESULT";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_campaign_id", type: OracleDbType.Int16, obj: req.campaign_id, direction: ParameterDirection.Input));
+				cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_prize_type", type: OracleDbType.Varchar2, obj: req.prize_type, direction: ParameterDirection.Input));
+				cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_PRIZE_LEVEL", type: OracleDbType.Int16, obj: req.prize_level, direction: ParameterDirection.Input));
+				cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_in_dateYYYYMMDD", type: OracleDbType.Varchar2, obj: req.prize_date, direction: ParameterDirection.Input));
+                //cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.Varchar2, direction: ParameterDirection.Output));
+				OracleParameter param_out = new OracleParameter("returnds", OracleDbType.Varchar2, 1000);
+				param_out.Direction = ParameterDirection.Output;
+                cmd_pkg.Parameters.Add(param_out);
+				
+				cmd_pkg.ExecuteNonQuery();
+                res = cmd_pkg.Parameters["returnds"].Value.ToString();
+
+            }
+			
+            //return JsonConvert.SerializeObject(res);
+			return res;
+        }
         
         
 

@@ -56,6 +56,15 @@ namespace LotteryAPI.Model
 	}
 	
 	
+	public class SaveResultReq
+    {
+        public int campaign_id { get; set; }
+        public string prize_type { get; set; }
+        public string prize_level { get; set; }
+        public string prize_date { get; set; }
+
+    }
+	
 
 
 
