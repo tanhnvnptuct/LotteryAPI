@@ -104,13 +104,33 @@ namespace LotteryAPI.Controllers
         public string GetCurrentDetailCalendar([FromBody] int cal_id)
         {
             List<WinCalenderDetail> res = new List<WinCalenderDetail>();
-            WinCalenderDetail item = new WinCalenderDetail(cal_id + 1, "Giai Dac biet", 0, 10, 0, "", "", 1);
-            res.Add(item);
-            item = new WinCalenderDetail(cal_id + 2, "Giai Nhat", 1, 10, 0, "", "", 1);
-            res.Add(item);
-            item = new WinCalenderDetail(cal_id + 3, "Giai Nhi", 2, 10, 0, "", "", 1);
-            res.Add(item);
-            //return "xx"; 
+
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.lottery_find_calender_detail";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_cal_id", type: OracleDbType.Int16, obj: cal_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+
+    
+                while (drd.Read())
+                {
+                    WinCalenderDetail item = new WinCalenderDetail(Convert.ToInt32(drd["cal_id"]),drd["prize_type"].ToString(), Convert.ToInt32(drd["prize_level"]), Convert.ToInt32(drd["max_prize_level"])
+                        , Convert.ToInt32(drd["reserve"]),drd["mdt_from"].ToString(),drd["mdt_to"].ToString(),Convert.ToInt32(drd["status"]));
+                    res.Add(item);
+                }
+
+            }
+
+            //return new string[] { "value1111", "value2" };
             return JsonConvert.SerializeObject(res);
         }
         
@@ -129,10 +149,31 @@ namespace LotteryAPI.Controllers
         public string getTicketInfo(TicketInfoReq req)
         {
 
-            TicketInfo item = new TicketInfo(100, 200, req.campaignId);
+          //List<WinCalenderDetail> res = new List<WinCalenderDetail>();
+			TicketInfo res;
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
 
-            //return "xx"; 
-            return JsonConvert.SerializeObject(item);
+                cmd_pkg.CommandText = "pkg_common.GET_INFO_TICKET_V2";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_campaign_id", type: OracleDbType.Int16, obj: req.campaignId, direction: ParameterDirection.Input));
+				cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "prs_PRIZE_TYPE", type: OracleDbType.Varchar2, obj: req.prizeType, direction: ParameterDirection.Input));
+				cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "prs_PRIZE_DATE", type: OracleDbType.Varchar2, obj: req.lotDate, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+				drd.Read();
+                res = new TicketInfo(drd["ticketmin"].ToString(),drd["ticketmax"].ToString(),drd["ticketsum"].ToString());
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            return JsonConvert.SerializeObject(res);
         }
         
 
