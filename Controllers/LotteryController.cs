@@ -238,6 +238,25 @@ namespace LotteryAPI.Controllers
 				cmd_pkg.ExecuteNonQuery();
                 res = cmd_pkg.Parameters["returnds"].Value.ToString();
 
+
+                OracleCommand cmd_pkg_update_calendar = new OracleCommand();
+
+                cmd_pkg_update_calendar.CommandText = "PKG_WEB_V2.lottery_SAVE_RESULT";
+
+                cmd_pkg_update_calendar.Connection = con;
+                cmd_pkg_update_calendar.CommandType = CommandType.StoredProcedure;
+                cmd_pkg_update_calendar.Parameters.Add(new OracleParameter(parameterName: "ps_campaign_id", type: OracleDbType.Int16, obj: req.campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg_update_calendar.Parameters.Add(new OracleParameter(parameterName: "ps_prize_type", type: OracleDbType.Varchar2, obj: req.prize_type, direction: ParameterDirection.Input));
+                cmd_pkg_update_calendar.Parameters.Add(new OracleParameter(parameterName: "ps_PRIZE_LEVEL", type: OracleDbType.Int16, obj: req.prize_level, direction: ParameterDirection.Input));
+                cmd_pkg_update_calendar.Parameters.Add(new OracleParameter(parameterName: "ps_in_dateYYYYMMDD", type: OracleDbType.Varchar2, obj: req.prize_date, direction: ParameterDirection.Input));
+                //cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.Varchar2, direction: ParameterDirection.Output));
+                OracleParameter param_out1 = new OracleParameter("returnds", OracleDbType.Varchar2, 1000);
+                param_out1.Direction = ParameterDirection.Output;
+                cmd_pkg_update_calendar.Parameters.Add(param_out1);
+                
+                cmd_pkg_update_calendar.ExecuteNonQuery();
+
+
             }
 			
             //return JsonConvert.SerializeObject(res);
