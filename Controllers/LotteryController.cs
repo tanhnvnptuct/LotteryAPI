@@ -265,6 +265,40 @@ namespace LotteryAPI.Controllers
         
         
 
+        [HttpPost("[action]")]
+        public string GenCodesOff(GenCodesReq req)
+        {
+            String res="";
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.lottery_gen_Lot_Codes";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_campaign_id", type: OracleDbType.Int16, obj: req.campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_msisdn", type: OracleDbType.Varchar2, obj: req.msisdn, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_numOfCode", type: OracleDbType.Int16, obj: req.numofcode, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_subtype", type: OracleDbType.Int16, obj: req.substype, direction: ParameterDirection.Input));
+                 cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_backdays", type: OracleDbType.Int16, obj: req.backdays, direction: ParameterDirection.Input));
+                //cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleParameter param_out = new OracleParameter("returnds", OracleDbType.Varchar2, 1000);
+                param_out.Direction = ParameterDirection.Output;
+                cmd_pkg.Parameters.Add(param_out);
+                
+                cmd_pkg.ExecuteNonQuery();
+                res = cmd_pkg.Parameters["returnds"].Value.ToString();
+
+                
+
+            }
+            
+            return JsonConvert.SerializeObject(res);
+        }
 
 
 
