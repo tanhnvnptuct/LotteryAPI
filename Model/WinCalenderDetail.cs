@@ -57,9 +57,19 @@ namespace LotteryAPI.Model
             MdtTo = mdtTo;
             Status = status;
         }
+
+
+      
+}
 		
 
-	}
+	  [JsonObject(MemberSerialization.OptOut)]
+    public class WinCalenderDetail_edit
+    {
+        public int action;
+        public WinCalenderDetail winCalenderDetail;
+
+    }
 
 	
 

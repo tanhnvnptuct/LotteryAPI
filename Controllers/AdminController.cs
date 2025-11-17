@@ -214,5 +214,81 @@ namespace LotteryAPI.Controllers
         }
 
 
+        [HttpGet("[action]")]
+        public string GetCalendarDetail(int cal_id)
+        {
+            List<WinCalenderDetail> res = new List<WinCalenderDetail>();
+
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.get_detail_calendar";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_cal_id", type: OracleDbType.Int16, obj: cal_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+
+
+                while (drd.Read())
+                {
+                    WinCalenderDetail item = new WinCalenderDetail(Convert.ToInt32(drd["cal_id"]), drd["prize_type"].ToString(), Convert.ToInt32(drd["prize_level"]),
+                        Convert.ToInt32(drd["max_prize_level"]), Convert.ToInt32(drd["reserve"]), drd["mdt_from"].ToString(), drd["mdt_to"].ToString(),  Convert.ToInt32(drd["status"]));
+                    res.Add(item);
+                }
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            return JsonConvert.SerializeObject(res);
+        }
+
+
+        [HttpPost("[action]")]
+        public string EditCalendarDetail(WinCalenderDetail_edit data)
+        {
+            OracleCommand cmd_pkg = new OracleCommand();
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+              
+
+                cmd_pkg.CommandText = "pkg_web_v2.I_U_D_detail_calendar";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "action", type: OracleDbType.Int32, obj: data.action, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_cal_id", type: OracleDbType.Int32, obj: data.winCalenderDetail.CalId, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_prize_type", type: OracleDbType.Varchar2, obj: data.winCalenderDetail.PrizeType, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_prize_level", type: OracleDbType.Int32, obj: data.winCalenderDetail.PrizeLevel, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_max_prize_level", type: OracleDbType.Int32, obj: data.winCalenderDetail.MaxPrizeLevel, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_reserve", type: OracleDbType.Int32, obj: data.winCalenderDetail.Reserve, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_mdt_from", type: OracleDbType.Varchar2, obj: data.winCalenderDetail.MdtFrom, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_mdt_to", type: OracleDbType.Varchar2, obj: data.winCalenderDetail.MdtTo, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_status", type: OracleDbType.Int32, obj: data.winCalenderDetail.Status, direction: ParameterDirection.Input));
+                //cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.Varchar2,  direction: ParameterDirection.Output));
+                OracleParameter param_out = new OracleParameter("returnds", OracleDbType.Varchar2, 1000);
+                param_out.Direction = ParameterDirection.Output;
+                cmd_pkg.Parameters.Add(param_out);
+
+                cmd_pkg.ExecuteNonQuery();
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            if (cmd_pkg.Parameters["returnds"].Value.ToString() == "OK")
+                return "{\"err_code\":200, \"message\":\"OK\"}";
+            else
+                return "{\"err_code\":0, \"message\":\"" + cmd_pkg.Parameters["returnds"].Value.ToString() + "\"}";
+        }
+
+
+
     }
 }
