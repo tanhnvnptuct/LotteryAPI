@@ -52,11 +52,15 @@ namespace LotteryAPI.Controllers
             return JsonConvert.SerializeObject("{'err_code:xxx, message:'"+ res + "'}");
         }
 
+
         [HttpPost("[action]")]
-        public string testpost(WinCampaign_edit data)
+        public string Login(User data)
         {
-            return "ok123" + data.action.ToString() + "------++++-----" + data.winCampaign.campaign_name;
+              return "{\"err_code\":200, \"message\":\"OK\", \"username\":\""+data.username+"\"}";
+
         }
+
+       
 
 
 
@@ -94,6 +98,34 @@ namespace LotteryAPI.Controllers
 
             //return new string[] { "value1111", "value2" };
             return JsonConvert.SerializeObject(res);
+        }
+
+
+         [HttpPost("[action]")]
+        public string get_calendar_campaignid([FromBody]int data)
+        {
+
+            string res = "xxx";
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.get_calendar_campaignid";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_cal_id", type: OracleDbType.Int32, obj: data, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.Varchar2, size: 100, obj: res, direction: ParameterDirection.Output));
+
+                cmd_pkg.ExecuteNonQuery();
+
+                res = "0";
+                res = cmd_pkg.Parameters["returnds"].Value.ToString();
+            }
+            //return JsonConvert.SerializeObject("{'err_code':200, 'campaign_id':"+ res + "}");
+             return "{\"err_code\":200, \"campaign_id\":"+res+"}";
         }
 
         
