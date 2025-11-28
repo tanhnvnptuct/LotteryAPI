@@ -458,5 +458,55 @@ namespace LotteryAPI.Controllers
                 return "{\"err_code\":0, \"message\":\"" + cmd_pkg.Parameters["returnds"].Value.ToString() + "\"}";
         }
 
+
+        [HttpGet("[action]")]
+        public string GetGo9696Prize(int campaign_id, int cal_id)
+        {
+            List<Go9696Prize> res = new List<Go9696Prize>();
+
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.get_go9696prize";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int16, obj: campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_cal_id", type: OracleDbType.Int16, obj: campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+
+
+                while (drd.Read())
+                {
+                    Go9696Prize item = new Go9696Prize( Convert.ToInt32(drd["campaign_id"]), 
+                    Convert.ToInt32(drd["prize_id"].ToString()), 
+                    drd["prize_date"].ToString(),
+                    drd["prize_type"].ToString(), 
+                    Convert.ToInt32(drd["prize_level"].ToString()), 
+                    drd["win_code"].ToString(),
+                    drd["notes"].ToString(), 
+                    drd["create_time"].ToString(), 
+                    Convert.ToInt32(drd["order"].ToString()),
+                    Convert.ToInt32(drd["finish"]), 
+                    drd["prize_name"].ToString(), 
+                    Convert.ToInt32(drd["reserve"].ToString()),
+                    Convert.ToInt32(drd["fix_result"]), 
+                    drd["mdt_from_date"].ToString(), 
+                    drd["mdt_to_date"].ToString());
+                    res.Add(item);
+                }
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            return JsonConvert.SerializeObject(res);
+        }
+
+
     }
 }
