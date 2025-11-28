@@ -476,7 +476,7 @@ namespace LotteryAPI.Controllers
 
 
                 cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int16, obj: campaign_id, direction: ParameterDirection.Input));
-                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_cal_id", type: OracleDbType.Int16, obj: campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_cal_id", type: OracleDbType.Int16, obj: cal_id, direction: ParameterDirection.Input));
                 cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
                 OracleDataReader drd = cmd_pkg.ExecuteReader();
 
@@ -491,7 +491,7 @@ namespace LotteryAPI.Controllers
                     drd["win_code"].ToString(),
                     drd["notes"].ToString(), 
                     drd["create_time"].ToString(), 
-                    Convert.ToInt32(drd["order"].ToString()),
+                    Convert.ToInt32(drd["order_"].ToString()),
                     Convert.ToInt32(drd["finish"]), 
                     drd["prize_name"].ToString(), 
                     Convert.ToInt32(drd["reserve"].ToString()),
