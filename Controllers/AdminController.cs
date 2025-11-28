@@ -322,5 +322,141 @@ namespace LotteryAPI.Controllers
 
 
 
+        [HttpGet("[action]")]
+        public string GetConfig(int campaign_id)
+        {
+            List<WinConfig> res = new List<WinConfig>();
+
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.get_config";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int16, obj: campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+
+                while (drd.Read())
+                {
+                    WinConfig item = new WinConfig( Convert.ToInt32(drd["campaign_id"]), drd["config_key"].ToString() , drd["config_value"].ToString(), drd["config_type"].ToString());
+                    res.Add(item);
+                }
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            return JsonConvert.SerializeObject(res);
+        }
+
+
+        [HttpPost("[action]")]
+        public string EditConfig(WinConfig_edit data)
+        {
+            OracleCommand cmd_pkg = new OracleCommand();
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+              
+
+                cmd_pkg.CommandText = "pkg_web_v2.I_U_D_config";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "action", type: OracleDbType.Int32, obj: data.action, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int32, obj: data.winconfig.campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_config_key", type: OracleDbType.Varchar2, obj: data.winconfig.config_key, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_config_value", type: OracleDbType.Varchar2, obj: data.winconfig.config_value, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_config_type", type: OracleDbType.Varchar2, obj: data.winconfig.config_type, direction: ParameterDirection.Input));
+                //cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.Varchar2,  direction: ParameterDirection.Output));
+                OracleParameter param_out = new OracleParameter("returnds", OracleDbType.Varchar2, 1000);
+                param_out.Direction = ParameterDirection.Output;
+                cmd_pkg.Parameters.Add(param_out);
+
+                cmd_pkg.ExecuteNonQuery();
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            if (cmd_pkg.Parameters["returnds"].Value.ToString() == "OK")
+                return "{\"err_code\":200, \"message\":\"OK\"}";
+            else
+                return "{\"err_code\":0, \"message\":\"" + cmd_pkg.Parameters["returnds"].Value.ToString() + "\"}";
+        }
+
+
+        [HttpGet("[action]")]
+        public string GetMTTemplate(int campaign_id)
+        {
+            List<WinMtTemplate> res = new List<WinMtTemplate>();
+
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.get_mt_template";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int16, obj: campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+
+                while (drd.Read())
+                {
+                    WinMtTemplate item = new WinMtTemplate( Convert.ToInt32(drd["campaign_id"]), drd["mt_code"].ToString(), drd["mt_content"].ToString());
+                    res.Add(item);
+                }
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            return JsonConvert.SerializeObject(res);
+        }
+
+
+        [HttpPost("[action]")]
+        public string EditMTTemplate(WinMtTemplate_edit data)
+        {
+            OracleCommand cmd_pkg = new OracleCommand();
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+              
+
+                cmd_pkg.CommandText = "pkg_web_v2.I_U_D_mt_template";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "action", type: OracleDbType.Int32, obj: data.action, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int32, obj: data.winmttemplate.campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_mt_code", type: OracleDbType.Varchar2, obj: data.winmttemplate.mt_code, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_mt_content", type: OracleDbType.Varchar2, obj: data.winmttemplate.mt_content, direction: ParameterDirection.Input));
+                //cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.Varchar2,  direction: ParameterDirection.Output));
+                OracleParameter param_out = new OracleParameter("returnds", OracleDbType.Varchar2, 1000);
+                param_out.Direction = ParameterDirection.Output;
+                cmd_pkg.Parameters.Add(param_out);
+
+                cmd_pkg.ExecuteNonQuery();
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            if (cmd_pkg.Parameters["returnds"].Value.ToString() == "OK")
+                return "{\"err_code\":200, \"message\":\"OK\"}";
+            else
+                return "{\"err_code\":0, \"message\":\"" + cmd_pkg.Parameters["returnds"].Value.ToString() + "\"}";
+        }
+
     }
 }
