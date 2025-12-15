@@ -507,6 +507,37 @@ namespace LotteryAPI.Controllers
             return JsonConvert.SerializeObject(res);
         }
 
+        [HttpGet("[action]")]
+        public string DogenGo9696Prize(int campaign_id, int cal_id)
+        {
+            //List<Go9696Prize> res = new List<Go9696Prize>();
+              OracleCommand cmd_pkg = new OracleCommand();
+
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                //OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.dogen_go9696prize";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int16, obj: campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_cal_id", type: OracleDbType.Int16, obj: cal_id, direction: ParameterDirection.Input));
+                OracleParameter param_out = new OracleParameter("returnds", OracleDbType.Varchar2, 1000);
+                param_out.Direction = ParameterDirection.Output;
+                cmd_pkg.Parameters.Add(param_out);
+
+                cmd_pkg.ExecuteNonQuery();
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+           return "{\"err_code\":200, \"message\":\"" + cmd_pkg.Parameters["returnds"].Value.ToString() + "\"}";
+        }
+
 
     }
 }

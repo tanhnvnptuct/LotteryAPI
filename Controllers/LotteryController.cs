@@ -263,7 +263,42 @@ namespace LotteryAPI.Controllers
 			return res;
         }
         
-        
+         [HttpPost("[action]")]
+        public string GetResult(GetResult_req req)
+        {
+            List<GetResult_resp> res = new List<GetResult_resp>();
+            //String res="";
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.lottery_get_result";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int16, obj: req.campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_prize_type", type: OracleDbType.Varchar2, obj: req.prize_type, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_date_from_yyyymmdd", type: OracleDbType.Varchar2, obj: req.date_from_yyyymmdd, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_date_to_yyyymmdd", type: OracleDbType.Varchar2, obj: req.date_to_yyyymmdd, direction: ParameterDirection.Input));
+               cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+				while (drd.Read())
+                {
+                    GetResult_resp item = new GetResult_resp(drd["msisdn"].ToString(),drd["find_winner_createtime"].ToString(),drd["choose_winner"].ToString(),
+                    drd["reason_desc"].ToString(),drd["choose_winner_createtime"].ToString(),drd["prize_level"].ToString(),Convert.ToInt32(drd["reserve"].ToString()),
+                    drd["win_code"].ToString(),drd["prize_type"].ToString(),drd["prize_date"].ToString());
+                    res.Add(item);
+                }
+
+                
+
+            }
+            
+            return JsonConvert.SerializeObject(res);
+        }
 
         [HttpPost("[action]")]
         public string GenCodesOff(GenCodesReq req)
