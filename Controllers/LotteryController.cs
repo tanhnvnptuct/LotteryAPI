@@ -28,8 +28,8 @@ namespace LotteryAPI.Controllers
 
 
 
-        [HttpGet("[action]")]
-        public string GetCurrentCampaign()
+        [HttpPost("[action]")]
+        public string GetCurrentCampaign(GetCurrentCampaign_post data)
         {
            List<WinCampaign> res = new List<WinCampaign>();
 
@@ -44,7 +44,7 @@ namespace LotteryAPI.Controllers
                 cmd_pkg.CommandType = CommandType.StoredProcedure;
 
 
-                //cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "ps_SERVICE_ID", type: OracleDbType.Int16, obj: 90, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_username", type: OracleDbType.Varchar2, obj: data.username, direction: ParameterDirection.Input));
                 cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
                 OracleDataReader drd = cmd_pkg.ExecuteReader();
 

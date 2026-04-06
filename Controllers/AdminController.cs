@@ -392,6 +392,73 @@ namespace LotteryAPI.Controllers
 
 
         [HttpGet("[action]")]
+        public string GetCampaignUser(int campaign_id)
+        {
+            List<WinUser> res = new List<WinUser>();
+
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.get_campaign_user";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int16, obj: campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+
+                while (drd.Read())
+                {
+                    WinUser item = new WinUser( Convert.ToInt32(drd["campaign_id"]), drd["msisdn"].ToString() );
+                    res.Add(item);
+                }
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            return JsonConvert.SerializeObject(res);
+        }
+
+
+         [HttpPost("[action]")]
+        public string editCampaignUser(WinUser_edit data)
+        {
+            OracleCommand cmd_pkg = new OracleCommand();
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+              
+
+                cmd_pkg.CommandText = "pkg_web_v2.I_U_D_campaign_user";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "action", type: OracleDbType.Int32, obj: data.action, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int32, obj: data.winuser.campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_msisdn", type: OracleDbType.Varchar2, obj: data.winuser.msisdn, direction: ParameterDirection.Input));
+                 //cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.Varchar2,  direction: ParameterDirection.Output));
+                OracleParameter param_out = new OracleParameter("returnds", OracleDbType.Varchar2, 1000);
+                param_out.Direction = ParameterDirection.Output;
+                cmd_pkg.Parameters.Add(param_out);
+
+                cmd_pkg.ExecuteNonQuery();
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            if (cmd_pkg.Parameters["returnds"].Value.ToString() == "OK")
+                return "{\"err_code\":200, \"message\":\"OK\"}";
+            else
+                return "{\"err_code\":0, \"message\":\"" + cmd_pkg.Parameters["returnds"].Value.ToString() + "\"}";
+        }
+
+
+        [HttpGet("[action]")]
         public string GetMTTemplate(int campaign_id)
         {
             List<WinMtTemplate> res = new List<WinMtTemplate>();

@@ -54,4 +54,11 @@ namespace LotteryAPI.Model
 		public WinCampaign winCampaign;
 
 	}
+	
+	
+	public class GetCurrentCampaign_post
+	{
+		public string username;
+
+	}
 }
