@@ -1,6 +1,6 @@
 is_global = true
 build_property.RootNamespace = LotteryAPI
-build_property.ProjectDir = D:\LotteryAPI\
+build_property.ProjectDir = C:\Lottery\LotteryAPI\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.CsWinRTUseWindowsUIXamlProjections = false

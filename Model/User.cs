@@ -11,4 +11,10 @@ namespace LotteryAPI.Model
         public string password { get; set; }
       
     }
+
+     public class User_role
+    {
+        public string username { get; set; }
+      
+    }
 }

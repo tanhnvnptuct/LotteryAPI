@@ -1930,11 +1930,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\LotteryAPI\\LotteryAPI.csproj",
+      "projectUniqueName": "C:\\Lottery\\LotteryAPI\\LotteryAPI.csproj",
       "projectName": "LotteryAPI",
-      "projectPath": "D:\\LotteryAPI\\LotteryAPI.csproj",
+      "projectPath": "C:\\Lottery\\LotteryAPI\\LotteryAPI.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "D:\\LotteryAPI\\obj\\",
+      "outputPath": "C:\\Lottery\\LotteryAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -1961,7 +1961,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "10.0.200"
     },
     "frameworks": {
       "netcoreapp3.1": {
@@ -2021,7 +2021,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201\\RuntimeIdentifierGraph.json"
       }
     }
   }

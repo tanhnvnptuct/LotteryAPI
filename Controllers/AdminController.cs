@@ -539,5 +539,33 @@ namespace LotteryAPI.Controllers
         }
 
 
+         [HttpPost("[action]")]
+        public string GetUserRole(User_role data)
+        {
+
+            string res = "xxx";
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.get_user_role";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_username", type: OracleDbType.Varchar2, obj: data.username, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.Int16, size: 100, obj: res, direction: ParameterDirection.Output));
+
+                cmd_pkg.ExecuteNonQuery();
+
+                res = "0";
+                res = cmd_pkg.Parameters["returnds"].Value.ToString();
+            }
+            //return JsonConvert.SerializeObject("{'err_code':200, 'campaign_id':"+ res + "}");
+             return "{\"err_code\":200, \"role\":"+res+"}";
+        }
+
+
     }
 }
