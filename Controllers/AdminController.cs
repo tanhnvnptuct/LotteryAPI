@@ -606,7 +606,7 @@ namespace LotteryAPI.Controllers
         }
 
 
-         [HttpPost("[action]")]
+        [HttpPost("[action]")]
         public string GetUserRole(User_role data)
         {
 
@@ -632,6 +632,86 @@ namespace LotteryAPI.Controllers
             //return JsonConvert.SerializeObject("{'err_code':200, 'campaign_id':"+ res + "}");
              return "{\"err_code\":200, \"role\":"+res+"}";
         }
+        
+
+
+        [HttpGet("[action]")]
+        public string GetMdtCommon(int campaign_id, string msisdn)
+        {
+            List<GetMdtCommon_resp> res = new List<GetMdtCommon_resp>();
+
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.get_mdt_common";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_campaign_id", type: OracleDbType.Int16, obj: campaign_id, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_msisdn", type: OracleDbType.Varchar2, obj: msisdn, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+
+
+                while (drd.Read())
+                {
+                    
+                    GetMdtCommon_resp item = new GetMdtCommon_resp(   drd["prize_date"].ToString(),  drd["msisdn"].ToString(), drd["mdt"].ToString(),
+                           Convert.ToInt64(drd["id"].ToString()),  drd["createdate"].ToString(), Convert.ToInt32(drd["substype"].ToString()));
+
+
+                    res.Add(item);
+                }
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            return JsonConvert.SerializeObject(res);
+        }
+        
+
+        [HttpGet("[action]")]
+        public string GetTrungthuongBig(string fromdate, string todate)
+        {
+            List<GetTrungthuongBig_resp> res = new List<GetTrungthuongBig_resp>();
+
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.get_trungthuong_big";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_fromdate", type: OracleDbType.Varchar2, obj: fromdate, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_todate", type: OracleDbType.Varchar2, obj: todate, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+
+
+                while (drd.Read())
+                {
+                  
+                    GetTrungthuongBig_resp item = new GetTrungthuongBig_resp(   drd["ngay_trung"].ToString(),  drd["msisdn"].ToString(),  Convert.ToInt32(drd["tra_truoc"].ToString()),
+                           Convert.ToInt32(drd["id"].ToString()), Convert.ToInt32(drd["status_sms"].ToString()),  drd["log_date"].ToString(), Convert.ToInt32(drd["giai"].ToString()), drd["mdt"].ToString());
+
+
+                    res.Add(item);
+                }
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            return JsonConvert.SerializeObject(res);
+        }
+
 
 
     }
