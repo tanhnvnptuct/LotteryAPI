@@ -75,6 +75,28 @@ namespace LotteryAPI.Model
 
     }
 
+    	public class GenCodesReq_v2
+    {
+        public int campaign_id { get; set; }
+        public string msisdn { get; set; }
+        public int numofcode {get;set; }
+        public int substype { get; set; }
+        public int backdays { get; set; }
+        public int action { get; set; }
+
+    }
+
+    public class GenCodesReq_BRCD
+    {
+        public int campaign_id { get; set; }
+        public string account { get; set; }
+        public string msisdn { get; set; }
+        public int numofcode {get;set; }
+        public int substype { get; set; }
+        public int backdays { get; set; }
+        public int action { get; set; }
+    }
+
 
 
 }

@@ -45,7 +45,7 @@ public class GetResult_req
     {
         public string ngay_trung {get;set;}
         public string msisdn {get;set;}
-        public int tra_truoc {get;set;}
+        public int tra_sau {get;set;}
         public int id {get;set;}
         public int status_sms {get;set;}
         public string log_date {get;set;}
@@ -53,17 +53,33 @@ public class GetResult_req
         public string mdt {get;set;}
 
 
-        public GetTrungthuongBig_resp (string ngay_trung_, string msisdn_, int tra_truoc_, int id_, int status_sms_, string log_date_, int giai_, string mdt_)
+        public GetTrungthuongBig_resp (string ngay_trung_, string msisdn_, int tra_sau_, int id_, int status_sms_, string log_date_, int giai_, string mdt_)
      
         {
             this.ngay_trung = ngay_trung_;
             this.msisdn = msisdn_;
-            this.tra_truoc = tra_truoc_;
+            this.tra_sau = tra_sau_;
             this.id = id_;
             this.status_sms = status_sms_;
             this.log_date = log_date_;
             this.mdt = mdt_;
             this.giai= giai_;
+
+        }
+    }
+
+
+    public class GetReportBig_resp
+    {
+        public string msisdn {get;set;}
+        public int so_mdt {get;set;}
+
+
+        public GetReportBig_resp (string msisdn_,  int so_mdt_)
+     
+        {
+            this.msisdn = msisdn_;
+            this.so_mdt = so_mdt_;
 
         }
     }

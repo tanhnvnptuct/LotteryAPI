@@ -699,7 +699,7 @@ namespace LotteryAPI.Controllers
                 while (drd.Read())
                 {
                   
-                    GetTrungthuongBig_resp item = new GetTrungthuongBig_resp(   drd["ngay_trung"].ToString(),  drd["msisdn"].ToString(),  Convert.ToInt32(drd["tra_truoc"].ToString()),
+                    GetTrungthuongBig_resp item = new GetTrungthuongBig_resp(   drd["ngay_trung"].ToString(),  drd["msisdn"].ToString(),  Convert.ToInt32(drd["tra_sau"].ToString()),
                            Convert.ToInt32(drd["id"].ToString()), Convert.ToInt32(drd["status_sms"].ToString()),  drd["log_date"].ToString(), Convert.ToInt32(drd["giai"].ToString()), drd["mdt"].ToString());
 
 
@@ -711,6 +711,44 @@ namespace LotteryAPI.Controllers
             //return new string[] { "value1111", "value2" };
             return JsonConvert.SerializeObject(res);
         }
+
+
+        [HttpGet("[action]")]
+        public string GetReportBig(string fromdate)
+        {
+            List<GetReportBig_resp> res = new List<GetReportBig_resp>();
+
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                OracleCommand cmd_pkg = new OracleCommand();
+
+                cmd_pkg.CommandText = "pkg_web_v2.get_report_big";
+
+                cmd_pkg.Connection = con;
+                cmd_pkg.Connection.Open();
+                cmd_pkg.CommandType = CommandType.StoredProcedure;
+
+
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "p_fromdate", type: OracleDbType.Varchar2, obj: fromdate, direction: ParameterDirection.Input));
+                cmd_pkg.Parameters.Add(new OracleParameter(parameterName: "returnds", type: OracleDbType.RefCursor, direction: ParameterDirection.Output));
+                OracleDataReader drd = cmd_pkg.ExecuteReader();
+
+
+                while (drd.Read())
+                {
+                  
+                    GetReportBig_resp item = new GetReportBig_resp(drd["msisdn"].ToString(),  Convert.ToInt32(drd["so_mdt"].ToString()));
+
+
+                    res.Add(item);
+                }
+
+            }
+
+            //return new string[] { "value1111", "value2" };
+            return JsonConvert.SerializeObject(res);
+        }
+
 
 
 
